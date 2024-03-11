@@ -6,6 +6,9 @@ using Random = UnityEngine.Random;
 
 public class GameManager : MonoBehaviour
 {
+    public bool isPlayable = false;
+    public GameObject instanceParent;
+    
     public float timeToSpeedUp = 10f;
     public float speedBonus = 5f;
     public float speed = 10f;
@@ -27,9 +30,12 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator InstantiateCarOnTime()
     {
-        List<float> positions = new List<float>(){-4f, 0f, 4f};
-        int instAmount = Random.Range(1, 3);
-        InstantiateCar(positions, instAmount);
+        if (isPlayable)
+        {
+            List<float> positions = new List<float>(){-4f, 0f, 4f};
+            int instAmount = Random.Range(1, 3);
+            InstantiateCar(positions, instAmount);   
+        }
         yield return new WaitForSeconds(instantiateCarTime);
         StartCoroutine(InstantiateCarOnTime());
     }
@@ -42,7 +48,7 @@ public class GameManager : MonoBehaviour
 
             float xPos = positions[Random.Range(0, positions.Count)];
             positions.Remove(xPos);
-            var car = Instantiate(carsToInstantiate[Random.Range(0, carsToInstantiate.Count)], new Vector3(xPos, -3.25f, 180f), Quaternion.identity);
+            var car = Instantiate(carsToInstantiate[Random.Range(0, carsToInstantiate.Count)], new Vector3(xPos, -3.25f, 180f), Quaternion.identity, instanceParent.transform);
             car.speed = speed;
             existingMovingObjects.Add(car);
             
@@ -52,6 +58,8 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
+        if(!isPlayable) return;
+        
         timeElapsed += Time.deltaTime;
         score += Time.deltaTime;
 
@@ -74,5 +82,15 @@ public class GameManager : MonoBehaviour
         
         if(instantiateCarTime-0.2f < minimumInstantiateTime) return;
         instantiateCarTime -= 0.2f;
+    }
+
+    public void PlayGame()
+    {
+        isPlayable = true;
+    }
+
+    public void StopGame()
+    {
+        isPlayable = false;
     }
 }
