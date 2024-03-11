@@ -1,8 +1,7 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 public class GameManager : MonoBehaviour
@@ -15,8 +14,11 @@ public class GameManager : MonoBehaviour
     public float minimumInstantiateTime = 1.5f;
     public List<MovingObject> existingMovingObjects;
     public List<MovingObject> carsToInstantiate;
+
+    public TextMeshProUGUI scoreText;
     
     private float timeElapsed = 0f;
+    private float score = 0f;
 
     private void Start()
     {
@@ -51,6 +53,9 @@ public class GameManager : MonoBehaviour
     private void Update()
     {
         timeElapsed += Time.deltaTime;
+        score += Time.deltaTime;
+
+        scoreText.text = $"Счёт: {(int)score}";
 
         if (!(timeElapsed > timeToSpeedUp)) return;
         
